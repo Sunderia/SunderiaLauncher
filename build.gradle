@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+group 'fr.sunderia'
+version '1.0-SNAPSHOT'
+
+application {
+    mainClassName 'fr.sunderia.sunderialauncher.Main'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = 'https://jitpack.io/'
+        name = 'JitPack'
+    }
+}
+
+dependencies {
+    implementation 'com.github.Litarvan:OpenAuth:v1.1.2'
+    implementation 'fr.flowarg:flowupdater:1.5.2'
+    implementation 'fr.flowarg:openlauncherlib:3.2.3'
+
+    implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
+    implementation 'com.github.goxr3plus:FX-BorderlessScene:4.4.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+compileJava {
+    options.encoding = "UTF-8"
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_11
+}
+
+javafx {
+    version = 12
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.swing']
+}
