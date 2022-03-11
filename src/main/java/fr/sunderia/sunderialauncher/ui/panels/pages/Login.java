@@ -3,12 +3,15 @@ package fr.sunderia.sunderialauncher.ui.panels.pages;
 import fr.litarvan.openauth.AuthPoints;
 import fr.litarvan.openauth.AuthenticationException;
 import fr.litarvan.openauth.Authenticator;
+import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
 import fr.litarvan.openauth.model.AuthAgent;
 import fr.litarvan.openauth.model.response.AuthResponse;
 import fr.sunderia.sunderialauncher.SunderiaLauncher;
 import fr.sunderia.sunderialauncher.ui.PanelManager;
 import fr.sunderia.sunderialauncher.ui.panel.Panel;
+import fr.theshark34.openlauncherlib.minecraft.AuthInfos;
 import fr.theshark34.openlauncherlib.util.Saver;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -76,6 +79,17 @@ public class Login extends Panel {
         title.setTextAlignment(TextAlignment.CENTER);
         title.setTranslateY(30D);
         loginCard.getChildren().add(title);
+
+        //Logo
+        ImageView logo = new ImageView("images/icon.png");
+        logo.setFitWidth(150);
+        logo.setFitHeight(150);
+        logo.setPreserveRatio(true);
+        setCenterH(logo);
+        setCanTakeAllSize(logo);
+        setTop(logo);
+        loginCard.getChildren().add(logo);
+        logo.setTranslateY(80D);
 
         //Email
         setCanTakeAllSize(userField);
@@ -158,9 +172,7 @@ public class Login extends Panel {
         msLoginBtn.setMaxWidth(300);
         msLoginBtn.setTranslateY(145d);
         msLoginBtn.setGraphic(view);
-        msLoginBtn.setOnMouseClicked(event -> {
-            //TODO: Microsoft login
-        });
+        msLoginBtn.setOnMouseClicked(event -> authenticateMS());
 
         loginCard.getChildren().addAll(userField, userErrorLabel, passField, passErrorLabel, btnLogin, separator, loginWithLabel, msLoginBtn);
     }
@@ -180,18 +192,20 @@ public class Login extends Panel {
 
         try {
             AuthResponse response = authenticator.authenticate(AuthAgent.MINECRAFT, user, password, null);
-
             saver.set("accessToken", response.getAccessToken());
             saver.set("clientToken", response.getClientToken());
             saver.save();
+            AuthInfos infos = new AuthInfos(response.getSelectedProfile().getName(), response.getAccessToken(), response.getClientToken(), response.getSelectedProfile().getId());
 
-            SunderiaLauncher.getInstance().setAuthProfile(response.getSelectedProfile());
+            SunderiaLauncher.getInstance().setAuthInfo(infos);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Authentification réussie");
             alert.setHeaderText("Bienvenue " + response.getSelectedProfile().getName() + " sur Sunderia !");
             alert.setContentText("Vous êtes maintenant connecté.");
-            alert.showAndWait();
+            alert.showAndWait();*/
+
+            panelManager.showPanel(new HomePage());
         } catch (AuthenticationException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -199,5 +213,29 @@ public class Login extends Panel {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
+    }
+
+    public void authenticateMS() {
+        MicrosoftAuthenticator authenticator = new MicrosoftAuthenticator();
+        authenticator.loginWithAsyncWebview().whenComplete((response, error) -> {
+            if (error != null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur");
+                alert.setContentText(error.getMessage());
+                alert.show();
+                return;
+            }
+
+            saver.set("msAccessToken", response.getAccessToken());
+            saver.set("msRefreshToken", response.getRefreshToken());
+            saver.save();
+            SunderiaLauncher.getInstance().setAuthInfo(new AuthInfos(
+                    response.getProfile().getName(),
+                    response.getAccessToken(),
+                    response.getProfile().getId()
+            ));
+            this.logger.info("Hello " + response.getProfile().getName());
+            Platform.runLater(() -> panelManager.showPanel(new HomePage()));
+        });
     }
 }

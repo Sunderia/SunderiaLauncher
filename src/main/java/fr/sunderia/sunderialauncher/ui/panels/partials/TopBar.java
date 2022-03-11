@@ -61,19 +61,21 @@ public class TopBar extends Panel {
 
         closeBtn.setFill(Color.RED);
         closeBtn.setOpacity(.7f);
-        closeBtn.setSize("18px");
+        closeBtn.setSize("16px");
         closeBtn.setOnMouseEntered(event -> closeBtn.setOpacity(1.f));
         closeBtn.setOnMouseExited(event -> closeBtn.setOpacity(.7f));
         closeBtn.setOnMouseClicked(event -> System.exit(0));
         closeBtn.setTranslateX(70.0d);
+        closeBtn.setTranslateY(4.0D);
 
         fullscreenBtn.setFill(Color.GREENYELLOW);
         fullscreenBtn.setOpacity(.7f);
-        fullscreenBtn.setSize("18px");
+        fullscreenBtn.setSize("14px");
         fullscreenBtn.setOnMouseEntered(event -> fullscreenBtn.setOpacity(1.f));
         fullscreenBtn.setOnMouseExited(event -> fullscreenBtn.setOpacity(.7f));
         fullscreenBtn.setOnMouseClicked(event -> this.panelManager.getStage().setMaximized(!this.panelManager.getStage().isMaximized()));
         fullscreenBtn.setTranslateX(45.0D);
+        fullscreenBtn.setTranslateY(4.0D);
 
         minimizeBtn.setFill(Color.ROSYBROWN);
         minimizeBtn.setOpacity(.7f);
@@ -82,6 +84,7 @@ public class TopBar extends Panel {
         minimizeBtn.setOnMouseExited(event -> minimizeBtn.setOpacity(.7f));
         minimizeBtn.setOnMouseClicked(event -> this.panelManager.getStage().setIconified(true));
         minimizeBtn.setTranslateX(20.0D);
+        minimizeBtn.setTranslateY(3.0D);
 
         topBarButton.getChildren().addAll(closeBtn, fullscreenBtn, minimizeBtn);
     }

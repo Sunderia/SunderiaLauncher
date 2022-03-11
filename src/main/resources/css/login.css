@@ -3,7 +3,7 @@
 }
 
 .login-card {
-    -fx-background-color: white;
+    -fx-background-color: rgb(58, 61, 92);
 }
 
 .bg-image {
@@ -14,7 +14,7 @@
 }
 
 .login-card .login-title {
-    -fx-text-fill: rgb(20, 25, 25);
+    -fx-text-fill: white;
 }
 
 .login-card .login-input {
@@ -61,5 +61,5 @@
 }
 
 .login-with-label {
-    -fx-text-fill: rgb(20, 25, 25);
+    -fx-text-fill: white;
 }
